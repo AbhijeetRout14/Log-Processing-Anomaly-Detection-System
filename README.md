@@ -37,33 +37,57 @@ The system is designed to:
 ### 🔹 Database – MongoDB
 Logs are stored as structured JSON documents for fast filtering and aggregation.
 
-json
+```json
 {
   "timestamp": "2026-02-24T10:30:00",
   "level": "ERROR",
   "service": "auth-service",
   "message": "Database connection failed"
 }
-
+```
+```
 ### 🔹 Project Structure
 
 log-anomaly-system/
 │
 ├── backend/
-│   ├── main.py          # Entry point
-│   ├── routes/          # API Endpoints
-│   ├── models/          # Data schemas
-│   ├── services/        # Anomaly logic
-│   └── database.py      # MongoDB connection
+│   ├── main.py              # FastAPI app entry point
+│   │
+│   ├── routes/
+│   │   ├── logs.py          # Log ingestion & query endpoints
+│   │   └── anomalies.py     # Anomaly detection endpoints
+│   │
+│   ├── models/
+│   │   └── schemas.py       # Pydantic models for request/response
+│   │
+│   ├── services/
+│   │   ├── log_service.py       # Log business logic
+│   │   └── anomaly_service.py   # Anomaly detection algorithm
+│   │
+│   ├── database.py          # MongoDB connection setup
+│   ├── config.py            # Environment variables & settings
+│   ├── seed_data.py         # Script to generate sample logs
+│   └── requirements.txt
 │
 ├── frontend/
-│   ├── index.html       # Dashboard
-│   ├── logs.html        # Log Explorer
-│   ├── css/             # Styles
-│   └── js/              # Logic & Charts
+│   ├── index.html           # Dashboard page
+│   ├── logs.html            # Log viewer page
+│   │
+│   ├── css/
+│   │   └── style.css
+│   │
+│   └── js/
+│       ├── dashboard.js     # Dashboard logic & charts
+│       ├── logs.js          # Log viewer logic & filters
+│       └── api.js           # Shared API call functions
+│
+├── tests/
+│   ├── test_logs.py
+│   └── test_anomalies.py
 │
 └── README.md
 
+```
 
 ## 🔌 API Endpoints
 
@@ -89,3 +113,4 @@ Database: MongoDB (Motor driver for async support)
 
 ### 🏁 Final Outcome
 This project delivers a Real-time Log Monitoring and Anomaly Detection System. Instead of manually scanning text logs, users can instantly filter logs, visualize system behavior, and identify error spikes before they impact users.
+
