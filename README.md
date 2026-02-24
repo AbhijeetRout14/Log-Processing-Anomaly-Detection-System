@@ -44,26 +44,50 @@ Logs are stored as structured JSON documents for fast filtering and aggregation.
   "service": "auth-service",
   "message": "Database connection failed"
 }
-
+```
+```
 ### 🔹 Project Structure
 
 log-anomaly-system/
 │
 ├── backend/
-│   ├── main.py          # Entry point
-│   ├── routes/          # API Endpoints
-│   ├── models/          # Data schemas
-│   ├── services/        # Anomaly logic
-│   └── database.py      # MongoDB connection
+│   ├── main.py              # FastAPI app entry point
+│   │
+│   ├── routes/
+│   │   ├── logs.py          # Log ingestion & query endpoints
+│   │   └── anomalies.py     # Anomaly detection endpoints
+│   │
+│   ├── models/
+│   │   └── schemas.py       # Pydantic models for request/response
+│   │
+│   ├── services/
+│   │   ├── log_service.py       # Log business logic
+│   │   └── anomaly_service.py   # Anomaly detection algorithm
+│   │
+│   ├── database.py          # MongoDB connection setup
+│   ├── config.py            # Environment variables & settings
+│   ├── seed_data.py         # Script to generate sample logs
+│   └── requirements.txt
 │
 ├── frontend/
-│   ├── index.html       # Dashboard
-│   ├── logs.html        # Log Explorer
-│   ├── css/             # Styles
-│   └── js/              # Logic & Charts
+│   ├── index.html           # Dashboard page
+│   ├── logs.html            # Log viewer page
+│   │
+│   ├── css/
+│   │   └── style.css
+│   │
+│   └── js/
+│       ├── dashboard.js     # Dashboard logic & charts
+│       ├── logs.js          # Log viewer logic & filters
+│       └── api.js           # Shared API call functions
+│
+├── tests/
+│   ├── test_logs.py
+│   └── test_anomalies.py
 │
 └── README.md
 
+```
 
 ## 🔌 API Endpoints
 
@@ -72,11 +96,13 @@ The system follows a RESTful architecture for log ingestion and data retrieval.
 | Category | Method | Endpoint | Description |
 | :--- | :--- | :--- | :--- |
 | **Log Ingestion** | `POST` | `/api/logs` | Insert a single structured JSON log |
-| **Log Ingestion** | `POST` | `/api/logs/batch` | Bulk insert multiple logs for high-throughput |
-| **Log Retrieval** | `GET` | `/api/logs` | Fetch logs with support for level, service, and date filters |
-| **Analytics** | `GET` | `/api/dashboard/summary` | Retrieve aggregated metrics for the dashboard |
-| **Anomalies** | `GET` | `/api/anomalies` | Fetch results from the anomaly detection engine |
-| **Utilities** | `POST` | `/api/seed` | Trigger the generator to insert synthetic sample logs |
+| **Log Ingestion** | `POST` | `/api/logs/batch` | Bulk insert multiple logs |
+| **Log Retrieval** | `GET` | `/api/logs` | Query logs with filters (level, service, date range, pagination) |
+| **Analytics** | `GET` | `/api/logs/stats` | Get log statistics (counts by level, service, hour) |
+| **Anomalies** | `GET` | `/api/anomalies` | Get detected anomalies |
+| **Anomalies** | `POST` | `/api/anomalies/detect` | Trigger anomaly detection for a specific time window |
+| **Analytics** | `GET` | `/api/dashboard/summary` | Retrieve dashboard summary metrics |
+| **Utilities** | `POST` | `/api/seed` | Generate and insert synthetic sample log data |
 
 
 
@@ -89,3 +115,4 @@ Database: MongoDB (Motor driver for async support)
 
 ### 🏁 Final Outcome
 This project delivers a Real-time Log Monitoring and Anomaly Detection System. Instead of manually scanning text logs, users can instantly filter logs, visualize system behavior, and identify error spikes before they impact users.
+
