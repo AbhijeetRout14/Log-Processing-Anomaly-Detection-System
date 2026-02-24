@@ -37,7 +37,7 @@ The system is designed to:
 ### 🔹 Database – MongoDB
 Logs are stored as structured JSON documents for fast filtering and aggregation.
 
-```json
+json
 {
   "timestamp": "2026-02-24T10:30:00",
   "level": "ERROR",
