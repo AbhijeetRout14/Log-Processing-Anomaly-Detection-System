@@ -18,6 +18,7 @@ Modern cloud-based applications generate millions of logs per day. Traditional l
 
 ---
 
+
 ## 🎯 Project Objective
 The system is designed to:
 1.  **Ingest Logs via REST API:** Support for single and batch JSON log ingestion.
