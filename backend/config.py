@@ -1,17 +1,15 @@
-# Environment variables and settings
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+# Load .env from project root
+env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
 
 class Settings:
-    """
-    Application configuration settings loaded from environment variables.
-    """
-
-    MONGO_URI: str = os.getenv("MONGO_URI")
-    DB_NAME: str = os.getenv("DB_NAME", "log_system")
+    MONGO_URI: str = "mongodb+srv://abhijeetgudu2014_db_user:QIQIeSWhSzI6BZAX@project1.apmh8yn.mongodb.net/"
+    DB_NAME: str = "log_system"
 
 
 settings = Settings()

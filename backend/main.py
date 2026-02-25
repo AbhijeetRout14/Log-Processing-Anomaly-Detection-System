@@ -1,33 +1,63 @@
-#FastAPI app entry point
+# FastAPI app entry point
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import mongodb
+from contextlib import asynccontextmanager
+
+from backend.database import mongodb
+from backend.routes.logs import router as logs_router
+
+from backend.routes.stats import router as stats_router
+from backend.routes.anomalies import router as anomalies_router
+from backend.routes.admin import router as admin_router
+
+# ✅ Use lifespan instead of deprecated @app.on_event("startup")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Starting up application...")
+    mongodb.connect()
+    yield
+    print("Shutting down application...")
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Log Processing & Anomaly Detection System")
+    app = FastAPI(
+        title="Log Processing & Anomaly Detection System",
+        version="1.0.0",
+        lifespan=lifespan
+    )
 
+    # ✅ Enable CORS (Development Mode)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=["*"],  # Change to specific frontend URL in production
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    @app.on_event("startup")
-    def startup_db():
-        mongodb.connect()
-
-    @app.get("/api/health")
-    def health_check():
-        return {"status": "ok"}
+    # ✅ Register Routes
+    app.include_router(logs_router)
     
+    app.include_router(stats_router)
+    
+    app.include_router(anomalies_router)
+    
+    app.include_router(admin_router)
+
+    # ✅ Health Check
+    @app.get("/api/health")
+    async def health_check():
+        return {"status": "ok"}
+
+    # ✅ Test MongoDB Connection
     @app.get("/api/test-db")
-    def test_db():
+    async def test_db():
+        if mongodb.logs_collection is None:
+            return {"error": "Database not connected"}
         count = mongodb.logs_collection.count_documents({})
         return {"log_count": count}
-    
+
     return app
 
 
