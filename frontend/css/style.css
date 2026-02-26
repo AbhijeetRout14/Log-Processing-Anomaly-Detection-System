@@ -438,3 +438,77 @@ body {
     align-items: center;
     gap: 15px;
 }
+
+/* ================= ANOMALY HISTORY TABLE ================= */
+
+.anomaly-card {
+    margin-top: 25px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.history-table thead {
+    background-color: #1f2937;
+    color: #ffffff;
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #2d3748;
+}
+
+.history-table th {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.history-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.empty-row {
+    text-align: center;
+    padding: 20px;
+    color: #9ca3af;
+}
+
+/* Severity Badges */
+
+.severity-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    display: inline-block;
+}
+
+.severity-high {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.severity-medium {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.severity-low {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+
+
+

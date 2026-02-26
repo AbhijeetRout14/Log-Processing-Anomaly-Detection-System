@@ -26,3 +26,9 @@ async function generateLogs(count = 100) {
     });
     return await response.json();
 }
+
+//fetch anomaly history
+async function fetchAnomalyHistory(limit = 10) {
+    const response = await fetch(`${BASE_URL}/anomalies/history?limit=${limit}`);
+    return await response.json();
+}
