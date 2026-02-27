@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Log Monitoring Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" href="favicon.ico" />
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="navbar-left">
+            <h1>Log Monitoring System</h1>
+            <span class="version">v1.0</span>
+        </div>
+        <div class="navbar-right">
+            <span id="systemStatus" class="status-badge">
+                ● System Active
+            </span>
+        </div>
+    </header>
+
+    <!-- ================= MAIN LAYOUT ================= -->
+    <div class="container">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li class="active">
+                        <a href="index.html">📊 Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="logs.html">📄 Logs Viewer</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ===== CONTENT AREA ===== -->
+        <main class="content">
+
+            <!-- ===== PAGE HEADER ===== -->
+            <section class="page-header">
+                <h2>Dashboard Overview</h2>
+                <p>
+                    Real-time insights into logs, errors, and anomaly detection.
+                </p>
+            </section>
+
+            <!-- ===== KPI CARDS ===== -->
+            <section class="kpi-grid">
+                <div class="kpi-card">
+                    <h3>Total Logs</h3>
+                    <p id="totalLogs" class="kpi-value">--</p>
+                </div>
+
+                <div class="kpi-card">
+                    <h3>Error Rate (%)</h3>
+                    <p id="errorRate" class="kpi-value error">--</p>
+                </div>
+
+                <div class="kpi-card">
+                    <h3>Top Service</h3>
+                    <p id="topServices" class="kpi-value">--</p>
+                </div>
+
+                <div class="kpi-card">
+                    <h3>Anomaly Status</h3>
+                    <p id="anomalyCount" class="kpi-value warning">--</p>
+                </div>
+            </section>
+
+            <!-- ===== CHARTS SECTION ===== -->
+            <section class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Log Distribution</h3>
+                    </div>
+                    <canvas id="logsTrendChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Errors by Service</h3>
+                    </div>
+                    <canvas id="errorsByServiceChart"></canvas>
+                </div>
+            </section>
+
+            <!-- ===== ACTION BUTTONS ===== -->
+            <section class="action-buttons">
+                <button id="seedBtn" class="btn primary">
+                    Generate Sample Logs
+                </button>
+
+                <button id="detectBtn" class="btn secondary">
+                    Run Anomaly Detection
+                </button>
+            </section>
+
+            <!-- ===== ANOMALY HISTORY ===== -->
+            <section class="history-section">
+                <div class="chart-card anomaly-card">
+                    <div class="chart-header">
+                        <h3>Recent Anomalies</h3>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Error Count</th>
+                                    <th>Severity</th>
+                                    <th>Detected At</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="anomalyHistoryTable">
+                                <tr>
+                                    <td colspan="4" class="empty-row">
+                                        No anomalies detected
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <p>
+            Team 2 | FastAPI + MongoDB |
+            Log Processing & Anomaly Detection System
+        </p>
+    </footer>
+
+    <!-- ================= JS FILES ================= -->
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>
