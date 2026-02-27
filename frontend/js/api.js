@@ -8,7 +8,7 @@ async function fetchStats() {
 }
 
 // Fetch logs
-async function fetchLogs(limit = 100) {
+async function loadLogs(limit = 100) {
     const response = await fetch(`${BASE_URL}/logs/?limit=${limit}`);
     return await response.json();
 }
@@ -31,4 +31,26 @@ async function generateLogs(count = 100) {
 async function fetchAnomalyHistory(limit = 10) {
     const response = await fetch(`${BASE_URL}/anomalies/history?limit=${limit}`);
     return await response.json();
+}
+
+//api to fetch logs with filters
+async function fetchLogsWithFilters(params) {
+    const query = new URLSearchParams(params).toString();
+
+    const response = await fetch(`${BASE_URL}/logs/?${query}`);
+    return response.json();
+}
+
+// Fetch logs (used by dashboard pie chart)
+async function fetchLogs(limit = 100) {
+    const response = await fetch(
+        `${BASE_URL}/logs?page=1&limit=${limit}`
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch logs");
+    }
+
+    const data = await response.json();
+    return data.logs;
 }

@@ -39,3 +39,4 @@ print("Database:", settings.DB_NAME)
 
 # Singleton instance
 mongodb = MongoDB()
+mongodb.connect()

@@ -84,8 +84,8 @@ async function renderErrorsByServiceChart() {
 
     logs.forEach(log => {
         if (log.level === "ERROR") {
-            errorCounts[log.service_name] =
-                (errorCounts[log.service_name] || 0) + 1;
+            errorCounts[log.service] =
+                (errorCounts[log.service] || 0) + 1;
         }
     });
 
