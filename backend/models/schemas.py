@@ -7,7 +7,7 @@ from datetime import datetime
 class LogEntry(BaseModel):
     timestamp: datetime
     level: str = Field(..., example="ERROR")
-    service_name: str = Field(..., example="auth-service")
+    service: str = Field(..., example="auth-service")
     message: str = Field(..., example="Database connection failed")
     response_time: Optional[float] = Field(None, example=120.5)
     error_code: Optional[int] = Field(None, example=500)

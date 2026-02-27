@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logs Viewer | Log Monitoring System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div>
+        <h1>Log Monitoring System</h1>
+        <span class="version">v1.0</span>
+    </div>
+    <div>
+        <span class="status-badge">● System Active</span>
+    </div>
+</header>
+
+<div class="container">
+
+    <aside class="sidebar">
+        <ul>
+            <li><a href="index.html">📊 Dashboard</a></li>
+            <li class="active"><a href="logs.html">📄 Logs Viewer</a></li>
+        </ul>
+    </aside>
+
+    <main class="content">
+
+        <section class="page-header">
+            <h2>Logs Viewer</h2>
+            <p>Filter, search and analyze system logs in real-time.</p>
+        </section>
+
+        <!-- FILTERS -->
+        <section class="filter-section">
+
+            <div class="filter-group">
+                <label>Level</label>
+                <select id="levelFilter">
+                    <option value="">All</option>
+                    <option value="INFO">INFO</option>
+                    <option value="WARNING">WARNING</option>
+                    <option value="ERROR">ERROR</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Service</label>
+                <input type="text" id="serviceFilter" placeholder="auth-service">
+            </div>
+
+            <div class="filter-group">
+                <label>Start Date</label>
+                <input type="datetime-local" id="startDate">
+            </div>
+
+            <div class="filter-group">
+                <label>End Date</label>
+                <input type="datetime-local" id="endDate">
+            </div>
+
+            <div class="filter-group">
+                <button id="applyFiltersBtn" class="btn-primary">
+                    Apply Filters
+                </button>
+            </div>
+
+        </section>
+
+        <!-- TABLE -->
+        <section class="table-section">
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Level</th>
+                        <th>Service</th>
+                        <th>Message</th>
+                        <th>Response Time (ms)</th>
+                    </tr>
+                </thead>
+                <tbody id="logsTableBody"></tbody>
+            </table>
+        </section>
+
+        <!-- PAGINATION -->
+        <section class="pagination-section">
+            <button id="prevPageBtn" class="btn secondary">Previous</button>
+            <span id="pageInfo">Page 1</span>
+            <button id="nextPageBtn" class="btn secondary">Next</button>
+        </section>
+
+    </main>
+</div>
+
+<footer class="footer">
+    <p>Team 2 | FastAPI + MongoDB | Logs Viewer</p>
+</footer>
+
+<script src="js/logs.js"></script>
+
+</body>
+</html>
