@@ -276,6 +276,32 @@ body {
     min-width: 160px;
 }
 
+.btn-primary {
+    margin-top: 20px;
+    background-color: #10b981; /* professional blue */
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.btn-primary:hover {
+    background-color:  #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Active (click) effect */
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
 /* ===============================
    TABLE STYLES
 ================================= */

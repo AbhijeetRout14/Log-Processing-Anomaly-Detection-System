@@ -75,21 +75,36 @@ function renderLogTrendChart(stats) {
 }
 
 //
+//
 // ================= ERRORS BY SERVICE CHART =================
 //
 async function renderErrorsByServiceChart() {
-    const logs = await fetchLogs(500);
+    const result = await fetchLogs(500);
+
+    // 🔥 FIX: extract array correctly
+    const logs = result.logs || [];
 
     const errorCounts = {};
 
     logs.forEach(log => {
         if (log.level === "ERROR") {
-            errorCounts[log.service_name] =
-                (errorCounts[log.service_name] || 0) + 1;
+
+            // 🔥 IMPORTANT: match your actual Mongo field name
+            const service =
+                log.service_name ||   // if using service_name
+                log.service ||        // if using service
+                log["service-name"];  // if using service-name
+
+            if (!service) return;
+
+            errorCounts[service] =
+                (errorCounts[service] || 0) + 1;
         }
     });
 
-    const ctx = document.getElementById("errorsByServiceChart").getContext("2d");
+    const ctx = document
+        .getElementById("errorsByServiceChart")
+        .getContext("2d");
 
     if (errorServiceChartInstance) {
         errorServiceChartInstance.destroy();
@@ -105,7 +120,6 @@ async function renderErrorsByServiceChart() {
         }
     });
 }
-
 //
 // ================= BUTTONS =================
 //
