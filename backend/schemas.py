@@ -3,6 +3,7 @@ from datetime import datetime
 
 class LogEntry(BaseModel):
     level: str
-    message: str
     service: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    message: str
+    response_time: int | None = None
+    timestamp: datetime | None = None

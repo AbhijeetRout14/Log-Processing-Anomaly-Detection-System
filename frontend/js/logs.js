@@ -1,177 +1,114 @@
-// Log viewer logic & filters
-// ===============================
-// CONFIGURATION
-// ===============================
-const API_BASE_URL = "http://localhost:8000/api/logs";
+const API_BASE_URL = "http://127.0.0.1:8000/api/logs";
 
 let currentPage = 1;
 const limit = 10;
+let totalPages = 1;
 
-// ===============================
-// DOM ELEMENTS
-// ===============================
-const logsTableBody = document.getElementById("logsTableBody");
-const levelFilter = document.getElementById("levelFilter");
-const serviceFilter = document.getElementById("serviceFilter");
-const startDate = document.getElementById("startDate");
-const endDate = document.getElementById("endDate");
-const applyFiltersBtn = document.getElementById("applyFiltersBtn");
-const prevPageBtn = document.getElementById("prevPageBtn");
-const nextPageBtn = document.getElementById("nextPageBtn");
-const pageInfo = document.getElementById("pageInfo");
+document.addEventListener("DOMContentLoaded", () => {
+    loadLogs();
 
-// ===============================
-// BUILD QUERY STRING
-// ===============================
-const buildQueryParams = () => {
-    const params = new URLSearchParams();
+    document.getElementById("applyFiltersBtn").addEventListener("click", () => {
+        currentPage = 1;
+        loadLogs();
+    });
 
-    if (levelFilter.value) {
-        params.append("level", levelFilter.value);
-    }
+    document.getElementById("prevPageBtn").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            loadLogs();
+        }
+    });
 
-    if (serviceFilter.value.trim()) {
-        params.append("service", serviceFilter.value.trim());
-    }
+    document.getElementById("nextPageBtn").addEventListener("click", () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            loadLogs();
+        }
+    });
+});
 
-    if (startDate.value) {
-        params.append("start", startDate.value);
-    }
+async function loadLogs() {
+    const logsTableBody = document.getElementById("logsTableBody");
 
-    if (endDate.value) {
-        params.append("end", endDate.value);
-    }
+    logsTableBody.innerHTML =
+        `<tr><td colspan="5">Loading...</td></tr>`;
 
-    params.append("page", currentPage);
-    params.append("limit", limit);
-
-    return params.toString();
-};
-
-// ===============================
-// FETCH LOGS FROM API
-// ===============================
-const fetchLogs = async () => {
     try {
-        logsTableBody.innerHTML = `<tr><td colspan="5">Loading logs...</td></tr>`;
+        const params = new URLSearchParams();
 
-        const query = buildQueryParams();
-        const response = await fetch(`${API_BASE_URL}?${query}`);
+        const level = document.getElementById("levelFilter").value;
+        const service = document.getElementById("serviceFilter").value.trim();
+        const start = document.getElementById("startDate").value;
+        const end = document.getElementById("endDate").value;
+
+        if (level) params.append("level", level);
+        if (service) params.append("service", service);
+        if (start) params.append("start_date", new Date(start).toISOString());
+        if (end) params.append("end_date", new Date(end).toISOString());
+
+        params.append("page", currentPage);
+        params.append("limit", limit);
+
+        const url = `${API_BASE_URL}?${params.toString()}`;
+        console.log("Fetching:", url);
+
+        const response = await fetch(url);
 
         if (!response.ok) {
-            throw new Error("Failed to fetch logs");
+            throw new Error(`Server error: ${response.status}`);
         }
 
         const data = await response.json();
 
-        renderLogs(data.logs);
-        updatePagination(data.total);
+        renderLogs(data.logs || []);
+        updatePagination(data.total || 0);
 
     } catch (error) {
-        logsTableBody.innerHTML = `
-            <tr>
-                <td colspan="5">Error loading logs. Please try again.</td>
-            </tr>
-        `;
         console.error("Error fetching logs:", error);
+        logsTableBody.innerHTML =
+            `<tr><td colspan="5">Error loading logs</td></tr>`;
     }
-};
+}
 
-// ===============================
-// RENDER LOGS INTO TABLE
-// ===============================
-const renderLogs = (logs) => {
+function renderLogs(logs) {
+    const logsTableBody = document.getElementById("logsTableBody");
+    logsTableBody.innerHTML = "";
+
     if (!logs || logs.length === 0) {
-        logsTableBody.innerHTML = `
-            <tr>
-                <td colspan="5">No logs found.</td>
-            </tr>
-        `;
+        logsTableBody.innerHTML =
+            `<tr><td colspan="5">No logs found</td></tr>`;
         return;
     }
-
-    logsTableBody.innerHTML = "";
 
     logs.forEach(log => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${formatDate(log.timestamp)}</td>
-            <td class="${getLevelClass(log.level)}">${log.level}</td>
-            <td>${log.service_name}</td>
+            <td>${new Date(log.timestamp).toLocaleString()}</td>
+            <td>${log.level}</td>
+            <td>${log.service_name || log.service || "-"}</td>
             <td>${log.message}</td>
             <td>${log.response_time ?? "-"}</td>
         `;
 
         logsTableBody.appendChild(row);
     });
-};
+}
 
-// ===============================
-// FORMAT DATE
-// ===============================
-const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString();
-};
+function updatePagination(totalLogs) {
+    totalPages = Math.ceil(totalLogs / limit) || 1;
 
-// ===============================
-// LEVEL COLOR CLASS
-// ===============================
-const getLevelClass = (level) => {
-    switch (level) {
-        case "INFO":
-            return "level-info";
-        case "WARN":
-            return "level-warn";
-        case "ERROR":
-            return "level-error";
-        case "CRITICAL":
-            return "level-critical";
-        default:
-            return "";
+    // Prevent overflow page number
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
     }
-};
 
-// ===============================
-// PAGINATION LOGIC
-// ===============================
-const updatePagination = (totalLogs) => {
-    const totalPages = Math.ceil(totalLogs / limit);
+    document.getElementById("pageInfo").innerText =
+        `Page ${currentPage} of ${totalPages}`;
 
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages || 1}`;
+    document.getElementById("prevPageBtn").disabled =
+        currentPage <= 1;
 
-    prevPageBtn.disabled = currentPage <= 1;
-    nextPageBtn.disabled = currentPage >= totalPages;
-};
-
-// ===============================
-// EVENT LISTENERS
-// ===============================
-
-// Apply Filters
-applyFiltersBtn.addEventListener("click", () => {
-    currentPage = 1;
-    fetchLogs();
-});
-
-// Previous Page
-prevPageBtn.addEventListener("click", () => {
-    if (currentPage > 1) {
-        currentPage--;
-        fetchLogs();
-    }
-});
-
-// Next Page
-nextPageBtn.addEventListener("click", () => {
-    currentPage++;
-    fetchLogs();
-});
-
-// ===============================
-// INITIAL LOAD
-// ===============================
-document.addEventListener("DOMContentLoaded", () => {
-    fetchLogs();
-});
+    document.getElementById("nextPageBtn").disabled =
+        currentPage >= totalPages;
+}
