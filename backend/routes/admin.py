@@ -32,7 +32,7 @@ async def seed_logs(count: int = 1000):
         log = {
             "level": level,
             "message": random.choice(MESSAGES[level]),
-            "service_name": random.choice(SERVICES),
+            "service": random.choice(SERVICES),
             "timestamp": datetime.utcnow() - timedelta(
                 minutes=random.randint(0, 1000)
             )

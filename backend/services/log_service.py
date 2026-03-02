@@ -45,3 +45,8 @@ class LogService:
             {"_id": ObjectId(log_id)}
         )
         return result.deleted_count
+    
+    @staticmethod
+    def create_logs_batch(logs: list):
+        result = mongodb.logs_collection.insert_many(logs)
+        return len(result.inserted_ids)

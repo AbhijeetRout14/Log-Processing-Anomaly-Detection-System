@@ -13,7 +13,7 @@ async def get_stats():
     error_logs = collection.count_documents({"level": "ERROR"})
 
     pipeline = [
-        {"$group": {"_id": "$service_name", "count": {"$sum": 1}}},
+        {"$group": {"_id": "$service", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}},
         {"$limit": 1}
     ]

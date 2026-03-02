@@ -3,13 +3,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-
+from fastapi import HTTPException
 from backend.database import mongodb
 from backend.routes.logs import router as logs_router
 
 from backend.routes.stats import router as stats_router
 from backend.routes.anomalies import router as anomalies_router
 from backend.routes.admin import router as admin_router
+from backend.routes.seed import router as seed_router
+from backend.routes.dashboard import router as dashboard_router
+
 
 # ✅ Use lifespan instead of deprecated @app.on_event("startup")
 @asynccontextmanager
@@ -44,6 +47,10 @@ def create_app() -> FastAPI:
     app.include_router(anomalies_router)
     
     app.include_router(admin_router)
+    
+    app.include_router(seed_router)
+    
+    app.include_router(dashboard_router)
 
     # ✅ Health Check
     @app.get("/api/health")

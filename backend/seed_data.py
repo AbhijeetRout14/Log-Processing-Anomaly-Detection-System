@@ -69,7 +69,7 @@ def generate_log():
     return {
         "level": level,
         "message": message,
-        "service_name": random.choice(SERVICES),
+        "service": random.choice(SERVICES),
         "timestamp": datetime.utcnow() - timedelta(
             minutes=random.randint(0, 10000)
         )

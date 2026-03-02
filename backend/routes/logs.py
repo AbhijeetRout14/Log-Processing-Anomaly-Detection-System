@@ -3,6 +3,8 @@ from datetime import datetime
 from backend.schemas import LogEntry
 from backend.database import mongodb
 from bson import ObjectId
+from typing import List
+from backend.services.log_service import LogService
 
 router = APIRouter(prefix="/api/logs", tags=["Logs"])
 
@@ -114,3 +116,19 @@ async def delete_log(log_id: str):
         raise HTTPException(status_code=404, detail="Log not found")
 
     return {"message": "Log deleted successfully"}
+
+
+#Batch API for creating multiple logs at once (for testing/demo purposes)
+@router.post("/batch")
+async def create_logs_batch(logs: List[LogEntry]):
+    if not logs:
+        raise HTTPException(status_code=400, detail="Log list cannot be empty")
+
+    try:
+        log_dicts = [log.dict() for log in logs]
+        result = LogService.create_logs_batch(log_dicts)
+        return {
+            "inserted_count": result
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
