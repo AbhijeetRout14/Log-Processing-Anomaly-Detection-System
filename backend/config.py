@@ -8,8 +8,12 @@ load_dotenv(dotenv_path=env_path)
 
 
 class Settings:
-    MONGO_URI: str = "mongodb+srv://abhijeetgudu2014_db_user:QIQIeSWhSzI6BZAX@project1.apmh8yn.mongodb.net/"
-    DB_NAME: str = "log_system"
+    def __init__(self):
+        self.MONGO_URI = os.getenv("MONGO_URI")
+        self.DB_NAME = os.getenv("DB_NAME", "log_system")
+
+        if not self.MONGO_URI:
+            raise ValueError("MONGO_URI is not set in the .env file")
 
 
 settings = Settings()

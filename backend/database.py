@@ -14,15 +14,26 @@ class MongoDB:
         self.anomalies_collection = None
 
     def connect(self):
-        self.client = MongoClient(settings.MONGO_URI)
-        self.db = self.client[settings.DB_NAME]
+        try:
+            self.client = MongoClient(settings.MONGO_URI)
 
-        self.client.admin.command("ping")
+            # Test connection
+            self.client.admin.command("ping")
 
-        self.logs_collection = self.db["logs"]
-        self.anomalies_collection = self.db["anomalies"]
+            self.db = self.client[settings.DB_NAME]
 
-        self._create_indexes()
+            self.logs_collection = self.db["logs"]
+            self.anomalies_collection = self.db["anomalies"]
+
+            self._create_indexes()
+
+            print("✅ Successfully connected to MongoDB")
+            print(f"📂 Database: {settings.DB_NAME}")
+
+        except ConnectionFailure as e:
+            print("❌ MongoDB connection failed")
+            print(f"Error: {e}")
+            raise e
 
     def _create_indexes(self):
         if self.logs_collection is not None:
@@ -34,8 +45,6 @@ class MongoDB:
             self.anomalies_collection.create_index("detected_at")
             self.anomalies_collection.create_index("severity")
 
-print("Connected to:", settings.MONGO_URI)
-print("Database:", settings.DB_NAME)
 
 # Singleton instance
 mongodb = MongoDB()
