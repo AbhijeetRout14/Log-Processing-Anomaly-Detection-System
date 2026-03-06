@@ -64,6 +64,10 @@ def create_app() -> FastAPI:
             return {"error": "Database not connected"}
         count = mongodb.logs_collection.count_documents({})
         return {"log_count": count}
+    
+    @app.get("/")
+    def root():
+        return {"message": "Log Processing & Anomaly Detection API is running"}
 
     return app
 
