@@ -1,5 +1,7 @@
 // Shared API call functions
-const BASE_URL = "http://127.0.0.1:8000/api";
+
+// Production backend URL (Render)
+const BASE_URL = "https://log-processing-anomaly-detection-system.onrender.com/api";
 
 // Fetch dashboard stats
 async function fetchStats() {
@@ -19,7 +21,7 @@ async function fetchAnomalies() {
     return await response.json();
 }
 
-//generate logs
+// Generate logs
 async function generateLogs(count = 100) {
     const response = await fetch(`${BASE_URL}/admin/seed?count=${count}`, {
         method: "POST"
@@ -27,18 +29,21 @@ async function generateLogs(count = 100) {
     return await response.json();
 }
 
-//fetch anomaly history
-async function fetchAnomalyHistory(limit = 10) {
-    const response = await fetch(`${BASE_URL}/anomalies/history?limit=${limit}`);
-    return await response.json();
+// Fetch anomaly history
+async function fetchAnomalyHistory(limit = 20) {
+    const res = await fetch(`${BASE_URL}/anomalies/history?limit=${limit}`);
+    if (!res.ok) throw new Error("Failed to fetch anomaly history");
+    return await res.json();
 }
 
+// Dashboard summary
 async function fetchDashboardSummary() {
     const res = await fetch(`${BASE_URL}/dashboard/summary`);
     if (!res.ok) throw new Error("Failed to fetch dashboard summary");
     return await res.json();
 }
 
+// Seed logs
 async function seedLogs(count = 200) {
     const res = await fetch(`${BASE_URL}/seed?count=${count}`, {
         method: "POST"
@@ -47,16 +52,11 @@ async function seedLogs(count = 200) {
     return await res.json();
 }
 
+// Run anomaly detection
 async function runDetection() {
     const res = await fetch(`${BASE_URL}/anomalies/detect`, {
         method: "POST"
     });
     if (!res.ok) throw new Error("Detection failed");
-    return await res.json();
-}
-
-async function fetchAnomalyHistory(limit = 20) {
-    const res = await fetch(`${BASE_URL}/anomalies/history?limit=${limit}`);
-    if (!res.ok) throw new Error("Failed to fetch anomaly history");
     return await res.json();
 }
