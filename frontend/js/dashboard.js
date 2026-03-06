@@ -12,6 +12,7 @@ let errorServiceChartInstance = null;
 //
 async function loadDashboard() {
     try {
+
         showLoadingState();
 
         const summary = await fetchDashboardSummary();
@@ -35,22 +36,26 @@ async function loadDashboard() {
 
         if (summary.anomaly_count > 0) {
             systemStatus.innerText = "● Anomaly Detected";
-            systemStatus.style.color = "red";
+            systemStatus.className =
+                "px-3 py-1 rounded-full text-sm bg-red-600 text-white";
         } else {
             systemStatus.innerText = "● System Normal";
-            systemStatus.style.color = "green";
+            systemStatus.className =
+                "px-3 py-1 rounded-full text-sm bg-green-600 text-white";
         }
 
         // ===== CHARTS =====
-        renderLogTrendChart(summary);
+        await renderLogTrendChart();
         await renderErrorsByServiceChart();
 
         // ===== ANOMALY TABLE =====
         renderAnomalyTable(anomalyHistory);
 
     } catch (error) {
+
         console.error("Dashboard load error:", error);
         showError("Failed to load dashboard data");
+
     }
 }
 
@@ -111,18 +116,22 @@ async function renderLogTrendChart() {
 
     const backgroundColors = labels.map(label =>
         anomalyTimes.includes(label)
-            ? "red"
-            : "rgba(54, 162, 235, 0.6)"
+            ? "#ef4444"  // anomaly highlight
+            : "#3b82f6"
     );
 
-    const ctx = document.getElementById("logsTrendChart").getContext("2d");
+    const ctx = document
+        .getElementById("logsTrendChart")
+        .getContext("2d");
 
     if (logTrendChartInstance) {
         logTrendChartInstance.destroy();
     }
 
     logTrendChartInstance = new Chart(ctx, {
+
         type: "bar",
+
         data: {
             labels: labels,
             datasets: [{
@@ -130,7 +139,36 @@ async function renderLogTrendChart() {
                 data: values,
                 backgroundColor: backgroundColors
             }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#e2e8f0"
+                    }
+                }
+            },
+
+            scales: {
+
+                x: {
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "#334155" }
+                },
+
+                y: {
+                    ticks: { color: "#94a3b8" },
+                    grid: { color: "#334155" }
+                }
+
+            }
+
         }
+
     });
 }
 
@@ -156,35 +194,72 @@ async function renderErrorsByServiceChart() {
     }
 
     errorServiceChartInstance = new Chart(ctx, {
+
         type: "pie",
+
         data: {
+
             labels: labels,
+
             datasets: [{
-                data: values
+                data: values,
+                backgroundColor: [
+                    "#ef4444",
+                    "#f59e0b",
+                    "#3b82f6",
+                    "#10b981",
+                    "#6366f1"
+                ]
             }]
+
+        },
+
+        options: {
+
+            plugins: {
+
+                legend: {
+                    labels: {
+                        color: "#e2e8f0"
+                    }
+                }
+
+            }
+
         }
+
     });
 }
+
 //
 // ================= ANOMALY TABLE =================
 //
 function renderAnomalyTable(history) {
+
     const tableBody = document.getElementById("anomalyHistoryTable");
     tableBody.innerHTML = "";
 
     if (!history || history.length === 0) {
+
         tableBody.innerHTML =
-            `<tr><td colspan="4">No anomalies detected</td></tr>`;
+            `<tr>
+                <td colspan="4" class="text-center text-gray-400">
+                    No anomalies detected
+                </td>
+            </tr>`;
+
         return;
     }
 
     history.forEach(item => {
+
         let severityClass = "severity-low";
+
         if (item.severity === "HIGH") severityClass = "severity-high";
         if (item.severity === "MEDIUM") severityClass = "severity-medium";
 
         const row = `
-            <tr>
+            <tr class="border-b border-slate-700">
                 <td>${item.type}</td>
                 <td>${item.error_count}</td>
                 <td>
@@ -204,37 +279,59 @@ function renderAnomalyTable(history) {
 // ================= BUTTON HANDLERS =================
 //
 document.getElementById("seedBtn").addEventListener("click", async () => {
+
     try {
+
         setButtonLoading("seedBtn", true);
         await seedLogs(200);
         await loadDashboard();
+
     } catch (e) {
+
         showError(e.message);
+
     } finally {
+
         setButtonLoading("seedBtn", false);
+
     }
+
 });
 
 document.getElementById("detectBtn").addEventListener("click", async () => {
+
     try {
+
         setButtonLoading("detectBtn", true);
         await runDetection();
         await loadDashboard();
+
     } catch (e) {
+
         showError(e.message);
+
     } finally {
+
         setButtonLoading("detectBtn", false);
+
     }
+
 });
 
 //
 // ================= HELPERS =================
 //
 function showLoadingState() {
+
     document.getElementById("totalLogs").innerText = "...";
+    document.getElementById("errorRate").innerText = "...";
+    document.getElementById("topServices").innerText = "...";
+    document.getElementById("anomalyCount").innerText = "...";
+
 }
 
 function setButtonLoading(id, state) {
+
     const btn = document.getElementById(id);
     if (!btn) return;
 
@@ -245,9 +342,12 @@ function setButtonLoading(id, state) {
     }
 
     btn.innerText = state ? "Processing..." : btn.dataset.original;
+
 }
 
 function showError(message) {
+
     console.error(message);
     alert(message);
+
 }

@@ -1,132 +1,188 @@
-<!-- Logs  viewer page -->
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Logs Viewer | Log Monitoring System</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+<head>
+<meta charset="UTF-8">
+<title>Logs Viewer | Log Monitoring System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
-<body>
+<body class="bg-slate-900 text-gray-200">
 
-    <!-- ================= NAVBAR ================= -->
-    <header class="navbar">
-        <div class="navbar-left">
-            <h1>Log Monitoring System</h1>
-            <span class="version">v1.0</span>
-        </div>
-        <div class="navbar-right">
-            <span class="status-badge">● System Active</span>
-        </div>
-    </header>
+<!-- ================= NAVBAR ================= -->
+<header class="flex justify-between items-center px-6 py-4 bg-slate-800 shadow">
 
-    <!-- ================= MAIN LAYOUT ================= -->
-    <div class="container">
+<div class="flex items-center gap-3">
+<h1 class="text-xl font-bold">Log Monitoring System</h1>
+<span class="text-gray-400 text-sm">v1.0</span>
+</div>
 
-        <!-- ===== SIDEBAR ===== -->
-        <aside class="sidebar">
-            <nav>
-                <ul>
-                    <li>
-                        <a href="index.html">📊 Dashboard</a>
-                    </li>
-                    <li class="active">
-                        <a href="logs.html">📄 Logs Viewer</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+<div>
+<span class="px-3 py-1 text-sm bg-green-600 rounded-full">
+● System Active
+</span>
+</div>
 
-        <!-- ===== CONTENT AREA ===== -->
-        <main class="content">
+</header>
 
-            <!-- ===== PAGE HEADER ===== -->
-            <section class="page-header">
-                <h2>Logs Viewer</h2>
-                <p>Filter, search and analyze system logs in real-time.</p>
-            </section>
 
-            <!-- ===== FILTER SECTION ===== -->
-            <section class="filter-section">
+<!-- ================= MAIN LAYOUT ================= -->
+<div class="flex min-h-screen">
 
-                <div class="filter-group">
-                    <label for="levelFilter">Level</label>
-                    <select id="levelFilter">
-                        <option value="">All</option>
-                        <option value="INFO">INFO</option>
-                        <option value="WARN">WARN</option>
-                        <option value="ERROR">ERROR</option>
-                        <option value="CRITICAL">CRITICAL</option>
-                    </select>
-                </div>
+<!-- ===== SIDEBAR ===== -->
+<aside class="w-60 bg-slate-800 p-5">
 
-                <div class="filter-group">
-                    <label for="serviceFilter">Service</label>
-                    <input type="text" id="serviceFilter" placeholder="e.g. auth-service">
-                </div>
+<nav>
+<ul class="space-y-4 text-gray-300">
 
-                <div class="filter-group">
-                    <label for="startDate">Start Date</label>
-                    <input type="datetime-local" id="startDate">
-                </div>
+<li class="hover:text-white">
+<a href="index.html">📊 Dashboard</a>
+</li>
 
-                <div class="filter-group">
-                    <label for="endDate">End Date</label>
-                    <input type="datetime-local" id="endDate">
-                </div>
+<li class="text-white font-semibold">
+<a href="logs.html">📄 Logs Viewer</a>
+</li>
 
-                <div class="filter-group">
-                    <button id="applyFiltersBtn" class="btn-primary">
-                        Apply Filters
-                    </button>
-                </div>
+</ul>
+</nav>
 
-            </section>
+</aside>
 
-            <!-- ===== LOGS TABLE ===== -->
-            <section class="table-section">
 
-                <table class="logs-table">
-                    <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Level</th>
-                            <th>Service</th>
-                            <th>Message</th>
-                            <th>Response Time (ms)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logsTableBody">
-                        <!-- Logs will be injected via logs.js -->
-                    </tbody>
-                </table>
+<!-- ===== CONTENT AREA ===== -->
+<main class="flex-1 p-6 space-y-6">
 
-            </section>
+<!-- ===== PAGE HEADER ===== -->
+<section>
+<h2 class="text-2xl font-semibold">Logs Viewer</h2>
+<p class="text-gray-400">
+Filter, search and analyze system logs in real-time.
+</p>
+</section>
 
-            <!-- ===== PAGINATION ===== -->
-            <section class="pagination-section">
 
-                <button id="prevPageBtn" class="btn secondary">Previous</button>
-                <span id="pageInfo">Page 1</span>
-                <button id="nextPageBtn" class="btn secondary">Next</button>
+<!-- ===== FILTER SECTION ===== -->
+<section class="bg-slate-800 p-5 rounded-lg shadow">
 
-            </section>
+<div class="grid grid-cols-5 gap-4 items-end">
 
-        </main>
-    </div>
+<div>
+<label class="text-sm text-gray-400">Level</label>
+<select id="levelFilter"
+class="w-full mt-1 p-2 bg-slate-700 border border-slate-600 rounded">
+<option value="">All</option>
+<option value="INFO">INFO</option>
+<option value="WARN">WARN</option>
+<option value="ERROR">ERROR</option>
+<option value="CRITICAL">CRITICAL</option>
+</select>
+</div>
 
-    <!-- ================= FOOTER ================= -->
-    <footer class="footer">
-        <p>Team 2 | FastAPI + MongoDB | Logs Viewer</p>
-    </footer>
+<div>
+<label class="text-sm text-gray-400">Service</label>
+<input id="serviceFilter"
+type="text"
+placeholder="auth-service"
+class="w-full mt-1 p-2 bg-slate-700 border border-slate-600 rounded">
+</div>
 
-    <!-- ================= JS FILES ================= -->
-    <script src="js/api.js"></script>
-    <script src="js/logs.js"></script>
+<div>
+<label class="text-sm text-gray-400">Start Date</label>
+<input id="startDate"
+type="datetime-local"
+class="w-full mt-1 p-2 bg-slate-700 border border-slate-600 rounded">
+</div>
+
+<div>
+<label class="text-sm text-gray-400">End Date</label>
+<input id="endDate"
+type="datetime-local"
+class="w-full mt-1 p-2 bg-slate-700 border border-slate-600 rounded">
+</div>
+
+<div>
+<button id="applyFiltersBtn"
+class="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded text-white font-medium">
+Apply Filters
+</button>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ===== LOGS TABLE ===== -->
+<section class="bg-slate-800 p-5 rounded-lg shadow">
+
+<div class="overflow-x-auto">
+
+<table class="w-full text-sm">
+
+<thead class="border-b border-slate-700 text-gray-400">
+
+<tr>
+<th class="text-left py-2">Timestamp</th>
+<th class="text-left py-2">Level</th>
+<th class="text-left py-2">Service</th>
+<th class="text-left py-2">Message</th>
+<th class="text-left py-2">Response Time (ms)</th>
+</tr>
+
+</thead>
+
+<tbody id="logsTableBody" class="divide-y divide-slate-700">
+
+<!-- logs injected by logs.js -->
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- ===== PAGINATION ===== -->
+<section class="flex items-center justify-center gap-4">
+
+<button id="prevPageBtn"
+class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded">
+Previous
+</button>
+
+<span id="pageInfo" class="text-gray-300">
+Page 1
+</span>
+
+<button id="nextPageBtn"
+class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded">
+Next
+</button>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="text-center py-4 text-sm text-gray-500 bg-slate-800">
+
+Team 2 | FastAPI + MongoDB | Logs Viewer
+
+</footer>
+
+
+<!-- ================= JS FILES ================= -->
+<script src="js/api.js"></script>
+<script src="js/logs.js"></script>
 
 </body>
 </html>

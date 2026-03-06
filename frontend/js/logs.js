@@ -5,6 +5,7 @@ const limit = 10;
 let totalPages = 1;
 
 document.addEventListener("DOMContentLoaded", () => {
+
     loadLogs();
 
     document.getElementById("applyFiltersBtn").addEventListener("click", () => {
@@ -26,17 +27,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Optional: auto refresh logs every 5 seconds
+    // auto refresh logs
     setInterval(loadLogs, 5000);
 });
 
 async function loadLogs() {
+
     const logsTableBody = document.getElementById("logsTableBody");
 
     logsTableBody.innerHTML =
-        `<tr><td colspan="5">Loading...</td></tr>`;
+        `<tr>
+            <td colspan="5" class="text-center text-gray-400 py-4">
+                Loading logs...
+            </td>
+        </tr>`;
 
     try {
+
         const params = new URLSearchParams();
 
         const level = document.getElementById("levelFilter").value;
@@ -52,7 +59,6 @@ async function loadLogs() {
         params.append("page", currentPage);
         params.append("limit", limit);
 
-        // FIXED: correct API endpoint
         const url = `${API_BASE_URL}/logs?${params.toString()}`;
 
         console.log("Fetching:", url);
@@ -72,43 +78,87 @@ async function loadLogs() {
         updatePagination(total);
 
     } catch (error) {
+
         console.error("Error fetching logs:", error);
 
         logsTableBody.innerHTML =
-            `<tr><td colspan="5">Failed to load logs</td></tr>`;
+            `<tr>
+                <td colspan="5" class="text-center text-red-400 py-4">
+                    Failed to load logs
+                </td>
+            </tr>`;
     }
 }
 
 function renderLogs(logs) {
+
     const logsTableBody = document.getElementById("logsTableBody");
     logsTableBody.innerHTML = "";
 
     if (!logs || logs.length === 0) {
+
         logsTableBody.innerHTML =
-            `<tr><td colspan="5">No logs found</td></tr>`;
+            `<tr>
+                <td colspan="5" class="text-center text-gray-400 py-4">
+                    No logs found
+                </td>
+            </tr>`;
+
         return;
     }
 
     logs.forEach(log => {
+
         const row = document.createElement("tr");
 
-        // highlight log level
-        if (log.level === "ERROR") row.style.backgroundColor = "#ffe5e5";
-        if (log.level === "WARN") row.style.backgroundColor = "#fff5cc";
+        row.classList.add("border-b", "border-slate-700", "hover:bg-slate-700");
+
+        const levelColor = getLevelColor(log.level);
 
         row.innerHTML = `
-            <td>${new Date(log.timestamp).toLocaleString()}</td>
-            <td>${log.level}</td>
-            <td>${log.service_name || log.service || "-"}</td>
-            <td>${log.message}</td>
-            <td>${log.response_time ?? "-"}</td>
+            <td class="py-2">${new Date(log.timestamp).toLocaleString()}</td>
+
+            <td class="py-2">
+                <span class="px-2 py-1 rounded text-xs font-semibold ${levelColor}">
+                    ${log.level}
+                </span>
+            </td>
+
+            <td class="py-2">${log.service_name || log.service || "-"}</td>
+
+            <td class="py-2">${log.message}</td>
+
+            <td class="py-2">${log.response_time ?? "-"}</td>
         `;
 
         logsTableBody.appendChild(row);
+
     });
 }
 
+function getLevelColor(level) {
+
+    switch (level) {
+
+        case "ERROR":
+            return "bg-red-500 text-white";
+
+        case "WARN":
+            return "bg-yellow-500 text-black";
+
+        case "CRITICAL":
+            return "bg-purple-600 text-white";
+
+        case "INFO":
+            return "bg-blue-500 text-white";
+
+        default:
+            return "bg-gray-500 text-white";
+    }
+}
+
 function updatePagination(totalLogs) {
+
     totalPages = Math.ceil(totalLogs / limit) || 1;
 
     if (currentPage > totalPages) {
