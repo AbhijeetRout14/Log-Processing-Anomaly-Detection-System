@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await loadDashboard();
-    setInterval(loadDashboard, 10000); // refresh every 10 sec
+    setInterval(loadDashboard, 30000); // refresh every 30 sec
 });
 
 let logTrendChartInstance = null;

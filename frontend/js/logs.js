@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // auto refresh logs
-    setInterval(loadLogs, 5000);
+    setInterval(loadLogs, 15000);
 });
 
 async function loadLogs() {
