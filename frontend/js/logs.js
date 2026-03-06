@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000/api/logs";
+const API_BASE_URL = "https://log-processing-anomaly-detection-system.onrender.com/api";
 
 let currentPage = 1;
 const limit = 10;

@@ -3,6 +3,7 @@
 // Production backend URL (Render)
 const BASE_URL = "https://log-processing-anomaly-detection-system.onrender.com/api";
 
+
 // Fetch dashboard stats
 async function fetchStats() {
     const response = await fetch(`${BASE_URL}/stats`);
