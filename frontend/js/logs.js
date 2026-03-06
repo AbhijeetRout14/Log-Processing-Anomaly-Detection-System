@@ -25,6 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
             loadLogs();
         }
     });
+
+    // Optional: auto refresh logs every 5 seconds
+    setInterval(loadLogs, 5000);
 });
 
 async function loadLogs() {
@@ -49,7 +52,9 @@ async function loadLogs() {
         params.append("page", currentPage);
         params.append("limit", limit);
 
-        const url = `${API_BASE_URL}?${params.toString()}`;
+        // FIXED: correct API endpoint
+        const url = `${API_BASE_URL}/logs?${params.toString()}`;
+
         console.log("Fetching:", url);
 
         const response = await fetch(url);
@@ -60,13 +65,17 @@ async function loadLogs() {
 
         const data = await response.json();
 
-        renderLogs(data.logs || []);
-        updatePagination(data.total || 0);
+        const logs = data.logs || data || [];
+        const total = data.total || logs.length;
+
+        renderLogs(logs);
+        updatePagination(total);
 
     } catch (error) {
         console.error("Error fetching logs:", error);
+
         logsTableBody.innerHTML =
-            `<tr><td colspan="5">Error loading logs</td></tr>`;
+            `<tr><td colspan="5">Failed to load logs</td></tr>`;
     }
 }
 
@@ -83,6 +92,10 @@ function renderLogs(logs) {
     logs.forEach(log => {
         const row = document.createElement("tr");
 
+        // highlight log level
+        if (log.level === "ERROR") row.style.backgroundColor = "#ffe5e5";
+        if (log.level === "WARN") row.style.backgroundColor = "#fff5cc";
+
         row.innerHTML = `
             <td>${new Date(log.timestamp).toLocaleString()}</td>
             <td>${log.level}</td>
@@ -98,7 +111,6 @@ function renderLogs(logs) {
 function updatePagination(totalLogs) {
     totalPages = Math.ceil(totalLogs / limit) || 1;
 
-    // Prevent overflow page number
     if (currentPage > totalPages) {
         currentPage = totalPages;
     }
